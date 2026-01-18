@@ -2,41 +2,34 @@
 
 **Aplikasi Pencatatan Keuangan Cerdas Berbasis Artificial Intelligence.**
 
-Proyek ini adalah eksplorasi pengembangan aplikasi web modern yang mengintegrasikan **Generative AI (OpenAI GPT-5-mini)** ke dalam alur kerja sehari-hari. Tujuannya adalah mengubah proses pencatatan keuangan yang membosankan menjadi instan, interaktif, dan berwawasan.
+Proyek ini adalah pengembangan aplikasi web modern yang mengintegrasikan **Generative AI (OpenAI GPT-5-mini)** ke dalam alur kerja sehari-hari. Tujuannya adalah mengubah proses pencatatan keuangan yang membosankan menjadi instan, interaktif, dan berwawasan.
 
 Aplikasi ini dirancang untuk memecahkan masalah malas mencatat keuangan dengan solusi teknologi:
 
-### 1. 🪄 AI Magic Recorder (Natural Language Input)
-Tidak perlu lagi mengisi formulir panjang (pilih tanggal, pilih kategori, ketik nominal). Cukup ketik layaknya curhat di chat:
+### 1. AI Magic Recorder (Natural Language Input)
+Tidak ada lagi form panjang berisi tanggal, kategori, dan nominal. Pengguna cukup mengetik dengan bahasa sehari-hari:
 > *"Tadi dapet gaji 5 juta, tapi langsung abis 1.5 juta buat bayar kost dan 50rb buat beli kopi."*
 
 AI akan secara otomatis:
 * Mendeteksi nominal uang.
-* Memisahkan antara **Pemasukan** dan **Pengeluaran**.
-* Menentukan **Kategori** yang relevan (misal: *Needs*, *Food*, *Income*).
-* Menyimpan data ke database dalam hitungan detik.
+* Memisahkan pemasukan dan pengeluaran.
+* Menentukan Kategori yang relevan.
+* Menyimpan data ke database tanpa input manual.
 
-### 2. 🤖 AI Financial Advisor
-Punya data keuangan tapi bingung cara bacanya? Fitur ini bertindak sebagai konsultan pribadi.
-* **Analisis Otomatis:** AI membaca rekap pengeluaran bulanan kamu.
-* **Feedback Personal:** Memberikan kritik, saran penghematan, atau pujian berdasarkan pola belanja.
-* **Custom Prompt:** Kamu bisa meminta AI menganalisis dengan gaya tertentu, misalnya *"Marahin saya dong karena boros"* atau *"Berikan saran investasi resiko rendah"*.
+### 2. AI Financial Advisor
+Data keuangan sering ada, tapi sulit dipahami. Fitur ini bertindak sebagai teman diskusi:
+* Menganalisis pola belanja bulanan.
+* Memberi saran penghematan yang konstekstual.
+* Bisa diajak berdialog dengan gaya bebas.
 
-### 3. 📊 Visualisasi Data Interaktif
-* **Real-time Monitoring:** Saldo, total pemasukan, dan pengeluaran dihitung otomatis.
-* **Donut Chart:** Visualisasi porsi pengeluaran per kategori untuk melihat ke mana uang paling banyak mengalir.
-* **Filter Periode:** Kemudahan meninjau riwayat transaksi per bulan.
-
-### 4. 🎨 Modern User Experience
-* **Dark Mode Support:** Tampilan yang nyaman di mata mengikuti preferensi sistem pengguna.
-* **SPA Feel:** Navigasi antar halaman yang mulus tanpa reload (menggunakan Inertia.js).
-* **Responsive:** Tampilan yang rapi baik di Desktop maupun Mobile.
+### 3. Visualisasi Data Interaktif
+* Saldo, total pemasukan, dan pengeluaran dihitung secara real-time.
+* Pengunaan donut chart untuk melihat pembagian porsi tiap kategori.
+* Fitur periode untuk evaluasi bulanan.
 
 ---
 
 ## 🛠️ Teknologi yang Digunakan
-
-Proyek ini dibangun di atas *stack* modern untuk performa dan skalabilitas:
 
 * **Backend:** [Laravel 12](https://laravel.com) (PHP)
 * **Frontend:** [React.js](https://react.dev) + TypeScript
@@ -44,4 +37,17 @@ Proyek ini dibangun di atas *stack* modern untuk performa dan skalabilitas:
 * **Artificial Intelligence:** [OpenAI API](https://openai.com) (Model `gpt-5-mini`)
 * **Styling:** [Tailwind CSS](https://tailwindcss.com)
 * **Database:** PostgreSQL
-* **Charts:** Recharts
+
+---
+
+## Tujuan Pengembangan
+
+Proyek ini mencoba menggabungkan:
+* Natural Language Processing
+* Otomatisasi klasifikasi transaksi
+* Antarmuka modern berbasis SPA
+* AI sebagai asisten personal
+
+## Self Note
+
+Pengembangan proyek ini adalah sebagai pembelajaran pribadi saya dan sekaligus personal portofolio dalam membuat aplikasi/website menggunakan OpenAI API, Framework Laravel, dan React sebagai Frontend. hasil akhir yang saya inginkan adalah alat sederhana yang membuat pencatatan keuangan terasa lebih manusiawi, bukan administratif. Semoga kedepannya saya dapat konsisten mengembangkan aplikasi ini menjadi lebih baik lagi.
