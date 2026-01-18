@@ -1,4 +1,4 @@
-# 💰 AI Financial Tracker
+# AI Financial Tracker
 
 **Aplikasi Pencatatan Keuangan Cerdas Berbasis Artificial Intelligence.**
 
@@ -29,7 +29,7 @@ Data keuangan sering ada, tapi sulit dipahami. Fitur ini bertindak sebagai teman
 
 ---
 
-## 🛠️ Teknologi yang Digunakan
+## Teknologi yang Digunakan
 
 * **Backend:** [Laravel 12](https://laravel.com) (PHP)
 * **Frontend:** [React.js](https://react.dev) + TypeScript
