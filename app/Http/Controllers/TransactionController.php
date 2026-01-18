@@ -143,7 +143,7 @@ class TransactionController extends Controller
         ";
 
         $result = OpenAI::chat()->create([
-            'model' => 'gpt-4o-mini',
+            'model' => 'gpt-5-mini-2025-08-07',
             'messages' => [
                 ['role' => 'system', 'content' => 'You are a helpful financial assistant.'],
                 ['role' => 'user', 'content' => $finalPrompt],
