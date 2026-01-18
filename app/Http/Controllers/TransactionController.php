@@ -26,7 +26,7 @@ class TransactionController extends Controller
         $request->validate(['text' => 'required|string']);
 
         $result = OpenAI::chat()->create([
-            'model' => 'gpt-5-nano-2025-08-07',
+            'model' => 'gpt-5-mini-2025-08-07',
             'messages' => [
                 [
                     'role' => 'system',
@@ -61,5 +61,72 @@ class TransactionController extends Controller
         }
 
         return redirect()->back()->with('message', 'Berhasil mencatat transaksi!');
+    }
+
+    public function analyze(Request $request)
+    {
+        $userId = auth()->id();
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        $transactions = Transaction::where('user_id', $userId)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->get();
+
+        if ($transactions->isEmpty()) {
+            return response()->json(['advice' => 'Belum ada data transaksi bulan ini. Catat dulu pengeluaranmu!']);
+        }
+
+        $totalIncome = $transactions->where('type', 'Income')->sum('amount');
+        $totalExpense = $transactions->where('type', 'Expense')->sum('amount');
+        $balance = $totalIncome - $totalExpense;
+
+        $expenseBreakdown = $transactions->where('type', 'Expense')
+            ->groupBy('category')
+            ->map(fn($row) => $row->sum('amount'))
+            ->toArray();
+
+        $expenseString = "";
+
+        foreach ($expenseBreakdown as $category => $amount) {
+            $expenseString .= "- $category: Rp" . number_format($amount, 0, ',', '.') . "\n";
+        }
+
+        // 1. Ambil prompt dari user (frontend)
+        $userCustomPrompt = $request->input('custom_prompt');
+
+        // 2. Jika user kosongkan input, pakai prompt default
+        if (empty($userCustomPrompt)) {
+            $userCustomPrompt = "Berikan analisis singkat, padat, dan jelas tentang kesehatan keuangan saya.";
+        }
+
+        // 3. GABUNGKAN Prompt User + Data Keuangan
+        // Ini penting! User cuma kasih perintah gaya bicara, kita yang kasih datanya.
+        $finalPrompt = "
+        $userCustomPrompt
+        
+        --- DATA KEUANGAN PENGGUNA (JANGAN DIUBAH) ---
+        - Total Pemasukan: Rp " . number_format($totalIncome, 0, ',', '.') . "
+        - Total Pengeluaran: Rp " . number_format($totalExpense, 0, ',', '.') . "
+        - Sisa Saldo: Rp " . number_format($balance, 0, ',', '.') . "
+        
+        Rincian per Kategori:
+        $expenseString
+        -----------------------------------------------
+        Jawablah permintaan user di atas berdasarkan data ini.
+        ";
+
+        $result = OpenAI::chat()->create([
+            'model' => 'gpt-4o-mini',
+            'messages' => [
+                ['role' => 'system', 'content' => 'You are a helpful financial assistant.'],
+                ['role' => 'user', 'content' => $finalPrompt],
+            ],
+        ]);
+
+        return response()->json([
+            'advice' => $result->choices[0]->message->content
+        ]);
     }
 }

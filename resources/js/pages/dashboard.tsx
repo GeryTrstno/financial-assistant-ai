@@ -1,9 +1,9 @@
-import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import transaction from '@/routes/transaction';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import React, { useMemo } from 'react';
+import axios from 'axios';
+import React, { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -45,6 +45,29 @@ export default function Dashboard({ transactions }: DashboardProps) {
         }).format(number);
     };
 
+    const [advice, setAdvice] = useState<string | null>(null);
+    const [loadingAdvice, setLoadingAdvice] = useState(false);
+
+    const [customPrompt, setCustomPrompt] = useState<string>('');
+
+    // Fungsi untuk memanggil AI Advisor
+    const handleAnalyze = async () => {
+        setLoadingAdvice(true);
+        setAdvice(null);
+        try {
+            // Kirim custom_prompt via body request
+            const response = await axios.post(transaction.analyze().url, {
+                custom_prompt: customPrompt,
+            });
+            setAdvice(response.data.advice);
+        } catch (error) {
+            console.error(error);
+            setAdvice('Gagal menghubungi AI.');
+        } finally {
+            setLoadingAdvice(false);
+        }
+    };
+
     // Menggunakan useMemo agar tidak dihitung ulang setiap kali ketik (re-render)
     const { totalIncome, totalExpense, balance } = useMemo(() => {
         const income = transactions
@@ -63,7 +86,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
     }, [transactions]);
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <div>
             <Head title="Dashboard" />
 
             <div className="flex h-full flex-col gap-6 p-4 md:p-6">
@@ -102,6 +125,50 @@ export default function Dashboard({ transactions }: DashboardProps) {
                     </div>
                 </div>
 
+                <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <div className="mb-4">
+                        <h3 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">
+                            🤖 AI Financial Advisor (Custom)
+                        </h3>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                            Ketik perintah sesukamu, AI akan menganalisis data
+                            bulan ini berdasarkan perintahmu.
+                        </p>
+                    </div>
+
+                    {/* Area Input Prompt Kustom */}
+                    <textarea
+                        className="mb-3 w-full rounded-lg border-zinc-300 bg-zinc-50 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                        rows={2}
+                        placeholder="Contoh: 'Analisis pengeluaranku dengan gaya marah-marah...'"
+                        value={customPrompt}
+                        onChange={(e) => setCustomPrompt(e.target.value)}
+                    />
+
+                    <div className="flex justify-end">
+                        <button
+                            onClick={handleAnalyze}
+                            disabled={loadingAdvice}
+                            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+                        >
+                            {loadingAdvice
+                                ? 'Sedang Menganalisis...'
+                                : 'Kirim Perintah 🚀'}
+                        </button>
+                    </div>
+
+                    {/* Kotak Hasil Analisis */}
+                    {advice && (
+                        <div className="mt-6 rounded-lg border-l-4 border-indigo-500 bg-indigo-50 p-4 dark:border-indigo-400 dark:bg-indigo-900/20">
+                            <h4 className="mb-2 font-bold text-indigo-800 dark:text-indigo-300">
+                                💡 Jawaban AI:
+                            </h4>
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
+                                {advice}
+                            </p>
+                        </div>
+                    )}
+                </div>
                 {/* --- BAGIAN 2: MAGIC INPUT AI --- */}
                 <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 p-1 shadow-lg">
                     <div className="rounded-xl bg-white p-6 dark:bg-zinc-900">
@@ -254,6 +321,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
                     )}
                 </div>
             </div>
-        </AppLayout>
+        </div>
     );
 }
