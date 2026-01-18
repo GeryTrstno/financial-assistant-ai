@@ -19,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/transaction/magic', [TransactionController::class, 'parseAndSave'])->name('transaction.magic');
 
     Route::post('/transaction/analyze', [TransactionController::class, 'analyze'])->name('transaction.analyze');
+
+    Route::delete('/transaction/{id}', [TransactionController::class, 'destroy'])->name('transaction.destroy');
 });
 
 

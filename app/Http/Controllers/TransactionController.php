@@ -11,13 +11,37 @@ class TransactionController extends Controller
 {
 
     // GET
-    public function index()
+    public function index(Request $request)
     {
+        $selectedDate = $request->input('date', now()->format('Y-m')); 
+        
+        list($year, $month) = explode('-', $selectedDate);
+
+        $transactions = Transaction::where('user_id', auth()->id())
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->latest('date')
+            ->get();
+
         return Inertia::render('dashboard', [
-            'transactions' => Transaction::where('user_id', auth()->id())
-                ->latest()
-                ->get()
+            'transactions' => $transactions,
+            'currentDate' => $selectedDate,
         ]);
+    }
+
+
+    // DESTROY
+    public function destroy($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $transaction->delete();
+
+        return redirect()->back()->with('message', 'Transaksi berhasil dihapus.');
     }
 
     // POST
@@ -63,6 +87,7 @@ class TransactionController extends Controller
         return redirect()->back()->with('message', 'Berhasil mencatat transaksi!');
     }
 
+    // POST
     public function analyze(Request $request)
     {
         $userId = auth()->id();
@@ -129,4 +154,6 @@ class TransactionController extends Controller
             'advice' => $result->choices[0]->message->content
         ]);
     }
+
+    
 }
