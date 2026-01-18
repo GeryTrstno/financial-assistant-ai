@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use OpenAI\Laravel\Facades\OpenAI;
+use App\Http\Controllers\TransactionController;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
@@ -11,9 +13,13 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+
+    Route::get('/dashboard', [TransactionController::class, 'index'])->name('dashboard');
+
+    Route::post('/transaction/magic', [TransactionController::class, 'parseAndSave'])->name('transaction.magic');
+
 });
+
+
 
 require __DIR__.'/settings.php';
