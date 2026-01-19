@@ -1,18 +1,10 @@
 import ExpenseChart from '@/components/ExpenseChart';
 import { dashboard } from '@/routes';
 import transaction from '@/routes/transaction';
-import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import React, { useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
-];
 
 interface DashboardProps {
     transactions: Array<{
@@ -29,7 +21,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ transactions, currentDate }: DashboardProps) {
-    const { data, setData, post, processing, reset, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         text: '',
     });
 
